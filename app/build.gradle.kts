@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id ("com.google.dagger.hilt.android")
+    id("kotlin-kapt")
 }
 
 android {
@@ -61,5 +63,13 @@ dependencies {
     implementation ("androidx.lifecycle:lifecycle-common:2.8.0")
 
     implementation("com.google.ai.client.generativeai:generativeai:0.4.0")
+
+    //Dagger Hilt
+    implementation ("com.google.dagger:hilt-android:2.51.1")
+    kapt ("com.google.dagger:hilt-compiler:2.51.1")
+    implementation ("androidx.hilt:hilt-navigation-compose:1.2.0")
+
+    // sdp
+    implementation("com.github.Kaaveh:sdp-compose:1.1.0")
 
 }

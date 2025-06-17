@@ -2,6 +2,7 @@ package com.example.a2
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
@@ -20,11 +22,9 @@ import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonColors
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,18 +32,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.a2.model.ChatViewModel
 import com.example.a2.model.MessageModel
-import com.example.a2.ui.theme.Purple80
 import com.example.a2.ui.theme.ColorModelMessage
 import com.example.a2.ui.theme.ColorUserMessage
 import com.example.a2.ui.theme.LightBlue
+import ir.kaaveh.sdpcompose.ssp
+import ir.kaaveh.sdpcompose.sdp
 
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Composable
@@ -74,16 +75,16 @@ fun MessageList(modifier: Modifier = Modifier, messageList: List<MessageModel>) 
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Icon(
-                modifier = Modifier.size(60.dp),
-                painter = painterResource(id = R.drawable.baseline_question_answer_24),
-                contentDescription = "Icon",
-                tint = Color.Blue,
+            Image(
+                modifier = Modifier.size(60.sdp),
+                painter = painterResource(id = R.drawable.ic_chatbot_icon),
+                contentDescription = "Icon"
             )
+
             Text(
                 text = "Ask me anything",
-                fontSize = 22.sp,
-                color = LightBlue,
+                fontSize = 18.ssp,
+                color = Color.Blue,
             )
         }
     } else {
@@ -115,14 +116,14 @@ fun MessageRow(messageModel: MessageModel) {
                 modifier = Modifier
                     .align(if (isModel) Alignment.BottomStart else Alignment.BottomEnd)
                     .padding(
-                        start = if (isModel) 8.dp else 70.dp,
-                        end = if (isModel) 70.dp else 8.dp,
-                        top = 8.dp,
-                        bottom = 8.dp
+                        start = if (isModel) 8.sdp else 70.sdp,
+                        end = if (isModel) 70.sdp else 8.sdp,
+                        top = 8.sdp,
+                        bottom = 8.sdp
                     )
                     .clip(RoundedCornerShape(48f))
                     .background(if (isModel) ColorModelMessage else ColorUserMessage)
-                    .padding(16.dp)
+                    .padding(16.sdp)
             ) {
                 SelectionContainer {
                     Text(
@@ -143,7 +144,7 @@ fun MessageInput(onMessageSend: (String) -> Unit) {
 
     Row(
         modifier = Modifier
-            .padding(8.dp)
+            .padding(8.sdp)
             .background(Color.White),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -158,6 +159,7 @@ fun MessageInput(onMessageSend: (String) -> Unit) {
                 focusedTextColor = LightBlue,
                 unfocusedTextColor = LightBlue,
             ),
+            shape = RoundedCornerShape(16.sdp),
             placeholder = {
                 Text(
                     text = "Type your message...",
@@ -167,8 +169,8 @@ fun MessageInput(onMessageSend: (String) -> Unit) {
         )
         IconButton(
             colors = IconButtonColors(
-                contentColor = Color.Black,
-                containerColor = Color.White,
+                contentColor = Color.White,
+                containerColor = Color.Blue,
                 disabledContentColor = Color.Black,
                 disabledContainerColor = Color.Black
             ),
@@ -179,10 +181,18 @@ fun MessageInput(onMessageSend: (String) -> Unit) {
                 }
             }
         ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.Send,
-                contentDescription = "Send"
-            )
+            Box(
+                modifier = Modifier
+                    .size(50.sdp)
+                    .clip(CircleShape),
+                contentAlignment = Alignment.Center
+            ){
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.Send,
+                    contentDescription = "Send"
+                )
+            }
+
         }
     }
 }
@@ -192,13 +202,26 @@ fun AppHeader() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(LightBlue)
     ) {
-        Text(
-            modifier = Modifier.padding(16.dp),
-            text = "A2",
-            color = Color.White,
-            fontSize = 22.sp
+        Image(
+            painter = painterResource(R.drawable.a2_logo),
+            contentDescription = "logo",
+            modifier = Modifier
+                .padding(16.sdp)
+                .size(32.sdp)
         )
     }
+}
+
+@RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
+@Preview(showBackground = true)
+@Composable
+fun ChatPagePreview(){
+
+    val chatViewModel: ChatViewModel = hiltViewModel()
+
+    ChatPage(
+        viewModel = chatViewModel
+    )
+
 }
