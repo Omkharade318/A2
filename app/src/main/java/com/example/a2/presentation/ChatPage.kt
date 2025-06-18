@@ -1,4 +1,4 @@
-package com.example.a2
+package com.example.a2.presentation
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -38,6 +38,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.a2.R
 import com.example.a2.model.ChatViewModel
 import com.example.a2.model.MessageModel
 import com.example.a2.ui.theme.ColorModelMessage
@@ -48,7 +51,11 @@ import ir.kaaveh.sdpcompose.sdp
 
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Composable
-fun ChatPage(modifier: Modifier = Modifier, viewModel: ChatViewModel) {
+fun ChatPage(
+    modifier: Modifier = Modifier,
+    viewModel: ChatViewModel,
+    navController: NavController
+) {
     Column(
         modifier = modifier.background(Color.White)
     ) {
@@ -219,9 +226,11 @@ fun AppHeader() {
 fun ChatPagePreview(){
 
     val chatViewModel: ChatViewModel = hiltViewModel()
+    val navController = rememberNavController()
 
     ChatPage(
-        viewModel = chatViewModel
+        viewModel = chatViewModel,
+        navController = navController
     )
 
 }
