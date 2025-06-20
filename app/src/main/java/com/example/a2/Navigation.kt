@@ -9,7 +9,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.a2.model.ChatViewModel
 import com.example.a2.presentation.ChatPage
-import com.example.a2.presentation.auth.SplashScreen
 import ir.kaaveh.sdpcompose.sdp
 
 @Composable
@@ -22,10 +21,6 @@ fun Navigation(){
         navController = navController,
         startDestination = Screen.Splash.route
     ) {
-
-        composable(Screen.Splash.route){
-            SplashScreen(navController = navController)
-        }
 
         composable(route = Screen.Chat.route){
             ChatPage(
