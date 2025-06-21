@@ -73,4 +73,7 @@ dependencies {
     // sdp
     implementation("com.github.Kaaveh:sdp-compose:1.1.0")
 
+    //Extra Icons
+    implementation ("androidx.compose.material:material-icons-extended")
+
 }
