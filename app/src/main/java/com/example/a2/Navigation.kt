@@ -9,6 +9,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.a2.model.ChatViewModel
 import com.example.a2.presentation.ChatPage
+import com.example.a2.presentation.auth.LogInScreen
+import com.example.a2.presentation.auth.SignUpScreen
 import ir.kaaveh.sdpcompose.sdp
 
 @Composable
@@ -19,8 +21,16 @@ fun Navigation(){
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Splash.route
+        startDestination = Screen.LogIn.route
     ) {
+
+        composable(route = Screen.LogIn.route){
+            LogInScreen(navController = navController)
+        }
+
+        composable(route = Screen.SignUp.route){
+            SignUpScreen(navController = navController)
+        }
 
         composable(route = Screen.Chat.route){
             ChatPage(

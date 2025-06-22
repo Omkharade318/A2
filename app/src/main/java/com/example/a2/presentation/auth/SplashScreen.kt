@@ -10,9 +10,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -85,6 +87,8 @@ fun SplashScreen() {
                     .padding(horizontal = 16.sdp),
                 fontFamily = FontFamily.Serif
             )
+
+            Spacer(modifier = Modifier.height(4.sdp))
 
             Text(
                 text = "Your AI learning journey\nbegins here",

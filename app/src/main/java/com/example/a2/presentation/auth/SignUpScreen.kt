@@ -1,10 +1,5 @@
 package com.example.a2.presentation.auth
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.SystemBarStyle
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,6 +18,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person2
+import androidx.compose.material.icons.filled.PhoneAndroid
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Icon
@@ -38,7 +35,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
@@ -48,29 +44,16 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.a2.Navigation
 import com.example.a2.R
 import com.example.a2.Screen
-import dagger.hilt.android.AndroidEntryPoint
 import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
 
-@AndroidEntryPoint
-class StartActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.light(Color.Transparent.toArgb(), Color.White.toArgb())
-        )
-        super.onCreate(savedInstanceState)
-        setContent {
-            Navigation()
-        }
-    }
-}
-
 @Composable
-fun LogInScreen(navController: NavController) {
+fun SignUpScreen(navController: NavController) {
 
+    val name = remember { mutableStateOf("") }
+    val phoneNo = remember { mutableStateOf("") }
     val emailState = remember { mutableStateOf("") }
     val passwordState = remember { mutableStateOf("") }
     val passwordVisible = remember { mutableStateOf(false) }
@@ -102,12 +85,58 @@ fun LogInScreen(navController: NavController) {
         Spacer(modifier = Modifier.height(12.sdp))
 
         Text(
-            text = "Login To Your Account",
+            text = "Sign Up",
             fontSize = 16.ssp,
             fontFamily = FontFamily.Serif
         )
 
         Spacer(modifier = Modifier.height(16.sdp))
+
+        // Name OutlinedTextField
+        OutlinedTextField(
+            value = name.value,
+            onValueChange = { name.value = it },
+            label = { Text("Name") },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.Person2,
+                    contentDescription = "Name Icon"
+                )
+            },
+            modifier = Modifier
+                .fillMaxWidth(0.8f),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedContainerColor = Color.White,
+                focusedContainerColor = Color.White
+            ),
+            shape = RoundedCornerShape(12.sdp)
+        )
+
+        Spacer(modifier = Modifier.height(8.sdp))
+
+        // Phone Number OutlinedTextField
+        OutlinedTextField(
+            value = phoneNo.value,
+            onValueChange = { phoneNo.value = it },
+            label = { Text("Phone No.") },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.PhoneAndroid,
+                    contentDescription = "Phone Icon"
+                )
+            },
+            modifier = Modifier
+                .fillMaxWidth(0.8f),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedContainerColor = Color.White,
+                focusedContainerColor = Color.White
+            ),
+            shape = RoundedCornerShape(12.sdp)
+        )
+
+        Spacer(modifier = Modifier.height(8.sdp))
 
         // Email OutlinedTextField
         OutlinedTextField(
@@ -186,11 +215,11 @@ fun LogInScreen(navController: NavController) {
                 .background(Color.White)
                 .padding(horizontal = 12.sdp),
             contentAlignment = Alignment.Center
-        ){
+        ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.sdp)
-            ){
+            ) {
 
                 Image(
                     painter = painterResource(R.drawable.ic_google_logo),
@@ -217,7 +246,7 @@ fun LogInScreen(navController: NavController) {
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "Login",
+                text = "Create Account",
                 fontSize = 18.ssp,
                 color = Color.White,
                 fontFamily = FontFamily.Serif
@@ -228,36 +257,34 @@ fun LogInScreen(navController: NavController) {
 
         TextButton(
             onClick = {
-                navController.navigate(Screen.SignUp.route)
+                navController.popBackStack()
             }
         ) {
-            Row{
+            Row {
 
                 Text(
-                    text = "Don't have an Account?",
+                    text = "Already have an account?",
                     fontSize = 12.ssp,
                     fontFamily = FontFamily.Serif,
                     color = Color.Black
                 )
 
                 Text(
-                    text = " Sign Up",
+                    text = " Sign In",
                     fontSize = 12.ssp,
                     fontFamily = FontFamily.Serif,
                     color = Color.Blue
                 )
             }
         }
-
-
     }
 }
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-private fun SignInPreview(){
+private fun SignUpPreview(){
 
     val navController = rememberNavController()
-    LogInScreen(navController)
+    SignUpScreen(navController)
 
 }
