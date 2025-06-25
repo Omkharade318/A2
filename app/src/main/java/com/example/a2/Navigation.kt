@@ -11,6 +11,7 @@ import com.example.a2.model.ChatViewModel
 import com.example.a2.presentation.ChatPage
 import com.example.a2.presentation.auth.LogInScreen
 import com.example.a2.presentation.auth.SignUpScreen
+import com.example.a2.presentation.home.HomeScreen
 import ir.kaaveh.sdpcompose.sdp
 
 @Composable
@@ -30,6 +31,10 @@ fun Navigation(){
 
         composable(route = Screen.SignUp.route){
             SignUpScreen(navController = navController)
+        }
+
+        composable(route = Screen.Home.route){
+            HomeScreen()
         }
 
         composable(route = Screen.Chat.route){

@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -213,7 +214,10 @@ fun LogInScreen(navController: NavController) {
                 .clip(RoundedCornerShape(12.sdp))
                 .background(Color.Blue)
                 .fillMaxWidth(0.6f)
-                .padding(horizontal = 12.sdp),
+                .padding(horizontal = 12.sdp)
+                .clickable {
+                    navController.navigate(Screen.Home.route)
+                },
             contentAlignment = Alignment.Center
         ) {
             Text(
