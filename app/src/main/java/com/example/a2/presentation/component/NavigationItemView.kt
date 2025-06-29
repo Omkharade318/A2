@@ -1,10 +1,10 @@
 package com.example.a2.presentation.component
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -19,22 +19,52 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.navigation.NavController
+import com.example.a2.Screen
 import com.example.a2.domain.model.NavigationItem
 import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
 
 @Composable
 fun NavigationItemView(
+    modifier: Modifier,
     navigationItem: NavigationItem,
     selected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    navController: NavController
 ){
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(size = 99.sdp))
-            .clickable { onClick() }
+            .clickable {
+                // Then navigate
+                try {
+                    onClick()
+                    val route = when (navigationItem) {
+                        NavigationItem.Profile -> Screen.Profile.route
+                        NavigationItem.Settings -> Screen.Settings.route
+                        NavigationItem.Help -> Screen.Chat.route
+                        NavigationItem.AboutUs -> Screen.AboutUs.route
+                        NavigationItem.LogOut -> Screen.LogOut.route
+                    }
+                    navController.navigate(route) {
+                        // Pop up to the start destination of the graph to
+                        // avoid building up a large stack of destinations
+                        popUpTo(Screen.Home.route) {
+                            saveState = true
+                        }
+                        // Avoid multiple copies of the same destination
+                        launchSingleTop = true
+                        // Restore state when re-selecting a previously selected item
+                        restoreState = true
+                    }
+                } catch (e: Exception) {
+                    // Handle navigation errors
+                    Log.e("Navigation", "Error navigating to ${navigationItem.title}", e)
+                }
+            }
             .background(
                 color =  if (selected) MaterialTheme.colorScheme.surfaceColorAtElevation(4.sdp) else Color.Unspecified,
                 shape = RoundedCornerShape(99.sdp)

@@ -1,12 +1,14 @@
 package com.example.a2.presentation.component
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
@@ -16,23 +18,28 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.navigation.NavController
 import com.example.a2.domain.model.NavigationItem
 import ir.kaaveh.sdpcompose.sdp
 import com.example.a2.R
+import com.example.a2.ui.theme.LightGray
 
 @Composable
 fun CustomDrawer(
     modifier: Modifier,
     selectedNavigationItem: NavigationItem,
     onNavigationItemClick: (NavigationItem) -> Unit,
-    onCloseClick: () -> Unit
+    onCloseClick: () -> Unit,
+    navController: NavController
 ){
 
     Column(
         modifier = modifier
             .fillMaxHeight()
             .fillMaxWidth(0.6f)
+            .background(LightGray)
             .padding(horizontal = 12.sdp),
         horizontalAlignment = Alignment.Start
     ) {
@@ -67,7 +74,9 @@ fun CustomDrawer(
             NavigationItemView(
                 navigationItem = navigationItem,
                 selected = navigationItem == selectedNavigationItem,
-                onClick = { onNavigationItemClick(navigationItem) }
+                onClick = { onNavigationItemClick(navigationItem) },
+                navController = navController,
+                modifier = Modifier.fillMaxWidth(0.8f)
             )
             Spacer(modifier = Modifier.height(4.sdp))
         }
@@ -87,7 +96,9 @@ fun CustomDrawer(
 
                         }
                     }
-                }
+                },
+                navController = navController,
+                modifier = Modifier.navigationBarsPadding()
             )
         }
     }

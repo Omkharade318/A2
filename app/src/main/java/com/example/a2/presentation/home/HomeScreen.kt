@@ -5,6 +5,7 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -36,6 +38,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.rememberNavController
 import com.example.a2.domain.model.CustomDrawerState
 import com.example.a2.domain.model.NavigationItem
 import com.example.a2.domain.model.isOpened
@@ -48,6 +51,8 @@ import ir.kaaveh.sdpcompose.sdp
 @Preview(showSystemUi = true)
 @Composable
 fun HomeScreen() {
+
+    val navController = rememberNavController()
 
     var drawerState by remember { mutableStateOf(CustomDrawerState.Closed) }
     var selectedNavigationItem by remember { mutableStateOf(NavigationItem.LogOut) }
@@ -101,8 +106,6 @@ fun HomeScreen() {
         modifier = Modifier
             .background(Color.White)
             .fillMaxSize()
-            .statusBarsPadding()
-            .navigationBarsPadding(),
     ) {
         CustomDrawer(
             modifier = Modifier.offset(x = animatedDrawerOffset),
@@ -112,7 +115,8 @@ fun HomeScreen() {
             },
             onCloseClick = {
                 drawerState = CustomDrawerState.Closed
-            }
+            },
+            navController = navController
         )
 
         Box(
@@ -120,6 +124,8 @@ fun HomeScreen() {
                 .fillMaxSize()
                 .offset(x = animatedContentOffset)
                 .scale(animatedScale)
+                .statusBarsPadding()
+                .navigationBarsPadding()
         ) {
 
             Row (
@@ -127,15 +133,24 @@ fun HomeScreen() {
                     .padding(start = 24.sdp)
                     .systemBarsPadding()
                     .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
             ){
                 Icon(
                     imageVector = Icons.Default.Menu,
                     contentDescription = "Menu Icon",
-                    tint = Color.Blue,
-                    modifier = Modifier.clickable {
+                    tint = Color.Black,
+                    modifier = Modifier
+                        .size(24.sdp)
+                        .clickable {
                         drawerState = drawerState.opposite()
                     }
+                )
+
+                Image(
+                    modifier = Modifier.padding(8.sdp),
+                    painter = painterResource(R.drawable.a2_logo),
+                    contentDescription = "logo"
                 )
             }
         }

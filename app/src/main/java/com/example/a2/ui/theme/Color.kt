@@ -14,3 +14,4 @@ val ColorUserMessage = Color(0xFF42B7EA)
 val ColorModelMessage = Color(0xFF3E78FF)
 
 val LightBlue = Color(0xFF4FC4FB)
+val LightGray = Color(0xFFF5F5F5)
