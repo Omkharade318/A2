@@ -26,6 +26,11 @@
         </activity>
         <activity android:name=".MainActivity" android:exported="false"/>
         <activity android:name=".presentation.auth.StartActivity" android:exported="false"/>
+
+        <activity android:name=".presentation.drawer.Profile" android:exported="false"/>
+        <activity android:name=".presentation.drawer.AboutUs" android:exported="false"/>
+        <activity android:name=".presentation.drawer.Help" android:exported="false"/>
+        <activity android:name=".presentation.drawer.Setting" android:exported="false"/>
     </application>
 
 </manifest>

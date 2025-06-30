@@ -11,6 +11,9 @@ import com.example.a2.model.ChatViewModel
 import com.example.a2.presentation.ChatPage
 import com.example.a2.presentation.auth.LogInScreen
 import com.example.a2.presentation.auth.SignUpScreen
+import com.example.a2.presentation.drawer.AboutUsScreen
+import com.example.a2.presentation.drawer.HelpScreen
+import com.example.a2.presentation.drawer.ProfileScreen
 import com.example.a2.presentation.home.HomeScreen
 import ir.kaaveh.sdpcompose.sdp
 
@@ -45,6 +48,17 @@ fun Navigation(){
             )
         }
 
+        composable(route = Screen.AboutUs.route){
+            AboutUsScreen()
+        }
+
+        composable(route = Screen.Help.route){
+            HelpScreen()
+        }
+
+        composable(route = Screen.Profile.route){
+            ProfileScreen()
+        }
 
     }
 }

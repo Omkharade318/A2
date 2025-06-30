@@ -1,5 +1,6 @@
 package com.example.a2.presentation.component
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material3.Icon
@@ -18,12 +20,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import com.example.a2.domain.model.NavigationItem
 import ir.kaaveh.sdpcompose.sdp
 import com.example.a2.R
+import com.example.a2.presentation.auth.StartActivity
+import com.example.a2.presentation.drawer.AboutUs
+import com.example.a2.presentation.drawer.Help
+import com.example.a2.presentation.drawer.Profile
+import com.example.a2.presentation.drawer.Setting
 import com.example.a2.ui.theme.LightGray
 
 @Composable
@@ -33,8 +40,9 @@ fun CustomDrawer(
     onNavigationItemClick: (NavigationItem) -> Unit,
     onCloseClick: () -> Unit,
     navController: NavController
-){
+) {
 
+    val context = LocalContext.current
     Column(
         modifier = modifier
             .fillMaxHeight()
@@ -50,6 +58,7 @@ fun CustomDrawer(
         ) {
 
             IconButton(
+                modifier = modifier.systemBarsPadding(),
                 onClick = onCloseClick
             ) {
                 Icon(
@@ -70,36 +79,75 @@ fun CustomDrawer(
 
         Spacer(modifier = Modifier.height(40.sdp))
 
-        NavigationItem.entries.toTypedArray().take(4).forEach { navigationItem ->
-            NavigationItemView(
-                navigationItem = navigationItem,
-                selected = navigationItem == selectedNavigationItem,
-                onClick = { onNavigationItemClick(navigationItem) },
-                navController = navController,
-                modifier = Modifier.fillMaxWidth(0.8f)
-            )
-            Spacer(modifier = Modifier.height(4.sdp))
-        }
+        NavigationItemView(
+            navigationItem = NavigationItem.Profile,
+            selected = NavigationItem.Profile == selectedNavigationItem,
+            onClick = {
+                val intent = Intent(context, Profile::class.java).apply {
+                    putExtra("message", "Clicked via Text!")
+                }
+                context.startActivity(intent)
+            },
+            navController = navController,
+            modifier = Modifier.fillMaxWidth(0.8f)
+        )
+        Spacer(modifier = Modifier.height(4.sdp))
+
+        NavigationItemView(
+            navigationItem = NavigationItem.AboutUs,
+            selected = NavigationItem.AboutUs == selectedNavigationItem,
+            onClick = {
+                val intent = Intent(context, AboutUs::class.java).apply {
+                    putExtra("message", "Clicked via Text!")
+                }
+                context.startActivity(intent)
+            },
+            navController = navController,
+            modifier = Modifier.fillMaxWidth(0.8f)
+        )
+        Spacer(modifier = Modifier.height(4.sdp))
+
+        NavigationItemView(
+            navigationItem = NavigationItem.Help,
+            selected = NavigationItem.Help == selectedNavigationItem,
+            onClick = {
+                val intent = Intent(context, Help::class.java).apply {
+                    putExtra("message", "Clicked via Text!")
+                }
+                context.startActivity(intent)
+            },
+            navController = navController,
+            modifier = Modifier.fillMaxWidth(0.8f)
+        )
+        Spacer(modifier = Modifier.height(4.sdp))
+
+        NavigationItemView(
+            navigationItem = NavigationItem.Settings,
+            selected = NavigationItem.Settings == selectedNavigationItem,
+            onClick = {
+                val intent = Intent(context, Setting::class.java).apply {
+                    putExtra("message", "Clicked via Text!")
+                }
+                context.startActivity(intent)
+            },
+            navController = navController,
+            modifier = Modifier.fillMaxWidth(0.8f)
+        )
+        Spacer(modifier = Modifier.height(4.sdp))
+
         Spacer(modifier = Modifier.weight(1f))
 
-        NavigationItem.entries.toTypedArray().takeLast(1).forEach { navigationItem ->
-            NavigationItemView(
-                navigationItem = navigationItem,
-                selected = false,
-                onClick = {
-                    when(navigationItem){
-                        NavigationItem.LogOut -> {
-                            onNavigationItemClick(NavigationItem.LogOut)
-                        }
-
-                        else-> {
-
-                        }
-                    }
-                },
-                navController = navController,
-                modifier = Modifier.navigationBarsPadding()
-            )
-        }
+        NavigationItemView(
+            navigationItem = NavigationItem.LogOut,
+            selected = false,
+            onClick = {
+                val intent = Intent(context, StartActivity::class.java).apply {
+                    putExtra("message", "Clicked via Text!")
+                }
+                context.startActivity(intent)
+            },
+            navController = navController,
+            modifier = Modifier.navigationBarsPadding()
+        )
     }
 }
