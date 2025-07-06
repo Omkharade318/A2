@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id ("com.google.dagger.hilt.android")
     id("kotlin-kapt")
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -51,6 +52,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.runtime.livedata)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -76,4 +78,6 @@ dependencies {
     //Extra Icons
     implementation ("androidx.compose.material:material-icons-extended")
 
+    //firebase auth
+    implementation(libs.firebase.auth)
 }

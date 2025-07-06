@@ -31,6 +31,7 @@
         <activity android:name=".presentation.drawer.AboutUs" android:exported="false"/>
         <activity android:name=".presentation.drawer.Help" android:exported="false"/>
         <activity android:name=".presentation.drawer.Setting" android:exported="false"/>
+        <activity android:name=".presentation.ChatPage" android:exported="false"/>
     </application>
 
 </manifest>

@@ -1,5 +1,6 @@
 package com.example.a2.presentation.auth
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,6 +31,8 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -37,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
@@ -47,6 +51,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.a2.R
 import com.example.a2.Screen
+import com.example.a2.model.AuthState
+import com.example.a2.model.AuthViewModel
 import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
 
@@ -58,6 +64,19 @@ fun SignUpScreen(navController: NavController) {
     val emailState = remember { mutableStateOf("") }
     val passwordState = remember { mutableStateOf("") }
     val passwordVisible = remember { mutableStateOf(false) }
+
+    val authViewModel : AuthViewModel = AuthViewModel()
+    val authState = authViewModel.authstate.observeAsState()
+
+    val context = LocalContext.current
+
+    LaunchedEffect(authState.value) {
+        when(authState.value){
+            is AuthState.Authenticated -> navController.navigate(Screen.Home.route)
+            is AuthState.Error -> Toast.makeText(context, (authState.value as AuthState.Error).message, Toast.LENGTH_LONG).show()
+            else -> Unit
+        }
+    }
 
     Image(
         painter = painterResource(R.drawable.login_signup_background),
@@ -245,7 +264,7 @@ fun SignUpScreen(navController: NavController) {
                 .fillMaxWidth(0.6f)
                 .padding(horizontal = 12.sdp)
                 .clickable {
-                    navController.navigate(Screen.Home.route)
+                    authViewModel.signup(emailState.value, passwordState.value)
                 },
             contentAlignment = Alignment.Center
         ) {

@@ -1,6 +1,9 @@
 package com.example.a2.presentation
 
 import android.os.Build
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -43,18 +46,29 @@ import androidx.navigation.compose.rememberNavController
 import com.example.a2.R
 import com.example.a2.model.ChatViewModel
 import com.example.a2.model.MessageModel
+import com.example.a2.presentation.drawer.ProfileScreen
 import com.example.a2.ui.theme.ColorModelMessage
 import com.example.a2.ui.theme.ColorUserMessage
 import com.example.a2.ui.theme.LightBlue
 import ir.kaaveh.sdpcompose.ssp
 import ir.kaaveh.sdpcompose.sdp
+class ChatPage : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            ChatPage(
+                viewModel = ChatViewModel()
+            )
+        }
+    }
+}
 
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Composable
 fun ChatPage(
     modifier: Modifier = Modifier,
     viewModel: ChatViewModel,
-    navController: NavController
 ) {
     Column(
         modifier = modifier.background(Color.White)
@@ -230,7 +244,6 @@ fun ChatPagePreview(){
 
     ChatPage(
         viewModel = chatViewModel,
-        navController = navController
     )
 
 }

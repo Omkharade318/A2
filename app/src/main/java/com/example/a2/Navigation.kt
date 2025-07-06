@@ -44,7 +44,6 @@ fun Navigation(){
             ChatPage(
                 modifier = Modifier.padding(16.sdp),
                 viewModel = chatViewModel,
-                navController = navController
             )
         }
 
