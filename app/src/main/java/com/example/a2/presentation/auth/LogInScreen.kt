@@ -82,6 +82,13 @@ fun LogInScreen(navController: NavController) {
     val passwordState = remember { mutableStateOf("") }
     val passwordVisible = remember { mutableStateOf(false) }
 
+    //validation
+    val isEmailValid = remember { mutableStateOf(false) }
+    val isPasswordValid = remember { mutableStateOf(false) }
+
+    val passwordError = remember { mutableStateOf(false) }
+    val emailError = remember { mutableStateOf(false) }
+
     val authViewModel = AuthViewModel()
     val authState = authViewModel.authstate.observeAsState()
 
@@ -132,8 +139,11 @@ fun LogInScreen(navController: NavController) {
         // Email OutlinedTextField
         OutlinedTextField(
             value = emailState.value,
-            onValueChange = { emailState.value = it },
-            label = { Text("Email") },
+            onValueChange = {
+                emailState.value = it
+                if (it.isNotBlank()) isEmailValid.value = true
+                            },
+            placeholder = { Text("Email") },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Email,
@@ -147,6 +157,10 @@ fun LogInScreen(navController: NavController) {
                 unfocusedContainerColor = Color.White,
                 focusedContainerColor = Color.White
             ),
+            isError = isEmailValid.value,
+            supportingText = {
+                if (!isEmailValid.value) Text("Email is required", color = Color.Black, fontSize = 10.ssp)
+            },
             shape = RoundedCornerShape(12.sdp)
         )
 
@@ -155,8 +169,11 @@ fun LogInScreen(navController: NavController) {
         // Password OutlinedTextField
         OutlinedTextField(
             value = passwordState.value,
-            onValueChange = { passwordState.value = it },
-            label = { Text("Password") },
+            onValueChange = {
+                passwordState.value = it
+                if (it.isNotBlank()) isPasswordValid.value = true
+                            },
+            placeholder = { Text("Password") },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Lock,
@@ -178,6 +195,10 @@ fun LogInScreen(navController: NavController) {
                 unfocusedContainerColor = Color.White,
                 focusedContainerColor = Color.White
             ),
+            isError = isPasswordValid.value,
+            supportingText = {
+                if (!isPasswordValid.value) Text("Password is required", color = Color.Black, fontSize = 10.ssp)
+            },
             shape = RoundedCornerShape(12.sdp)
         )
 
@@ -233,10 +254,40 @@ fun LogInScreen(navController: NavController) {
                 .clip(RoundedCornerShape(12.sdp))
                 .background(Color.Blue)
                 .fillMaxWidth(0.6f)
-                .padding(horizontal = 12.sdp)
                 .clickable {
-                    authViewModel.login(emailState.value, passwordState.value)
-                },
+                    var valid = true
+
+                    if (emailState.value.isBlank()) {
+                        emailError.value = true
+                        valid = false
+                        Toast.makeText(context, "Email is required", Toast.LENGTH_SHORT).show()
+                    } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(emailState.value).matches()) {
+                        isEmailValid.value = false
+                        valid = false
+                        Toast.makeText(context, "Email is Invalid", Toast.LENGTH_SHORT).show()
+                    } else {
+                        isEmailValid.value = true
+                    }
+
+                    // Password must be min 8 characters
+                    if (passwordState.value.isBlank()) {
+                        passwordError.value = true
+                        valid = false
+                        Toast.makeText(context, "Password is required", Toast.LENGTH_SHORT).show()
+                    } else if (passwordState.value.length < 8) {
+                        isPasswordValid.value = false
+                        valid = false
+                    } else {
+                        isPasswordValid.value = true
+                    }
+
+                    if (valid) {
+                        authViewModel.login(emailState.value, passwordState.value)
+                    } else {
+                        Toast.makeText(context, "Please correct the errors before proceeding", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                .padding(horizontal = 12.sdp),
             contentAlignment = Alignment.Center
         ) {
             Text(

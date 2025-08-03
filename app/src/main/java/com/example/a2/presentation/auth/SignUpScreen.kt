@@ -65,15 +65,35 @@ fun SignUpScreen(navController: NavController) {
     val passwordState = remember { mutableStateOf("") }
     val passwordVisible = remember { mutableStateOf(false) }
 
-    val authViewModel : AuthViewModel = AuthViewModel()
+    // Error state
+    val nameError = remember { mutableStateOf(false) }
+    val phoneError = remember { mutableStateOf(false) }
+    val emailError = remember { mutableStateOf(false) }
+    val passwordError = remember { mutableStateOf(false) }
+
+    //validation
+    val isEmailValid = remember { mutableStateOf(false) }
+    val isPasswordValid = remember { mutableStateOf(false) }
+    val isPhoneNoValid = remember { mutableStateOf(false) }
+
+    val showDialog = remember { mutableStateOf(false) }
+    val dialogMessage = remember { mutableStateOf("") }
+
+    val authViewModel: AuthViewModel = AuthViewModel()
     val authState = authViewModel.authstate.observeAsState()
 
     val context = LocalContext.current
 
     LaunchedEffect(authState.value) {
-        when(authState.value){
-            is AuthState.Authenticated -> navController.navigate(Screen.Home.route)
-            is AuthState.Error -> Toast.makeText(context, (authState.value as AuthState.Error).message, Toast.LENGTH_LONG).show()
+        when (val state = authState.value) {
+            is AuthState.Authenticated -> {
+                Toast.makeText(context, "Sign-up successful", Toast.LENGTH_SHORT).show()
+                navController.navigate(Screen.Home.route)
+            }
+            is AuthState.Error -> {
+                dialogMessage.value = state.message
+                showDialog.value = true
+            }
             else -> Unit
         }
     }
@@ -94,6 +114,31 @@ fun SignUpScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(48.sdp))
 
+        if (showDialog.value) {
+            androidx.compose.material3.AlertDialog(
+                onDismissRequest = {
+                    showDialog.value = false
+                },
+                title = {
+                    Text(text = "Error", fontFamily = FontFamily.Serif)
+                },
+                text = {
+                    Text(text = dialogMessage.value)
+                },
+                confirmButton = {
+                    TextButton(onClick = {
+                        showDialog.value = false
+                        // Optional: If already signed up, go back to login
+                        if (dialogMessage.value.contains("already", ignoreCase = true) ||
+                            dialogMessage.value.contains("exist", ignoreCase = true)) {
+                            navController.popBackStack()
+                        }
+                    }) {
+                        Text("OK")
+                    }
+                }
+            )
+        }
 
         Image(
             painter = painterResource(R.drawable.a2_logo),
@@ -115,21 +160,27 @@ fun SignUpScreen(navController: NavController) {
         // Name OutlinedTextField
         OutlinedTextField(
             value = name.value,
-            onValueChange = { name.value = it },
-            label = { Text("Name") },
+            onValueChange = {
+                name.value = it
+                if (it.isNotBlank()) nameError.value = false
+            },
+            placeholder = { Text("Name") },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Person2,
                     contentDescription = "Name Icon"
                 )
             },
-            modifier = Modifier
-                .fillMaxWidth(0.8f),
+            modifier = Modifier.fillMaxWidth(0.8f),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             colors = OutlinedTextFieldDefaults.colors(
                 unfocusedContainerColor = Color.White,
                 focusedContainerColor = Color.White
             ),
+            isError = nameError.value,
+            supportingText = {
+                if (nameError.value) Text("Name is required", color = Color.Red, fontSize = 10.ssp)
+            },
             shape = RoundedCornerShape(12.sdp)
         )
 
@@ -138,8 +189,11 @@ fun SignUpScreen(navController: NavController) {
         // Phone Number OutlinedTextField
         OutlinedTextField(
             value = phoneNo.value,
-            onValueChange = { phoneNo.value = it },
-            label = { Text("Phone No.") },
+            onValueChange = {
+                phoneNo.value = it
+                if (it.isNotBlank()) phoneError.value = false
+            },
+            placeholder = { Text("Phone No.") },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.PhoneAndroid,
@@ -153,6 +207,14 @@ fun SignUpScreen(navController: NavController) {
                 unfocusedContainerColor = Color.White,
                 focusedContainerColor = Color.White
             ),
+            isError = phoneError.value,
+            supportingText = {
+                when {
+                    phoneError.value -> Text("Phone number is required", color = Color.Red, fontSize = 10.ssp)
+                    !isPhoneNoValid.value -> Text("Phone number must be exactly 10 digits", color = Color.Black, fontSize = 10.ssp)
+                    else -> {}
+                }
+            },
             shape = RoundedCornerShape(12.sdp)
         )
 
@@ -161,8 +223,11 @@ fun SignUpScreen(navController: NavController) {
         // Email OutlinedTextField
         OutlinedTextField(
             value = emailState.value,
-            onValueChange = { emailState.value = it },
-            label = { Text("Email") },
+            onValueChange = {
+                emailState.value = it
+                if (it.isNotBlank()) emailError.value = false
+            },
+            placeholder = { Text("Email") },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Email,
@@ -176,6 +241,13 @@ fun SignUpScreen(navController: NavController) {
                 unfocusedContainerColor = Color.White,
                 focusedContainerColor = Color.White
             ),
+            isError = emailError.value,
+            supportingText = {
+                when {
+                    emailError.value -> Text("Email is required", color = Color.Red, fontSize = 10.ssp)
+                    else -> {}
+                }
+            },
             shape = RoundedCornerShape(12.sdp)
         )
 
@@ -184,8 +256,11 @@ fun SignUpScreen(navController: NavController) {
         // Password OutlinedTextField
         OutlinedTextField(
             value = passwordState.value,
-            onValueChange = { passwordState.value = it },
-            label = { Text("Password") },
+            onValueChange = {
+                passwordState.value = it
+                if (it.isNotBlank()) passwordError.value = false
+            },
+            placeholder = { Text("Password") },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Lock,
@@ -207,6 +282,14 @@ fun SignUpScreen(navController: NavController) {
                 unfocusedContainerColor = Color.White,
                 focusedContainerColor = Color.White
             ),
+            isError = passwordError.value,
+            supportingText = {
+                when {
+                    passwordError.value -> Text("Password is required", color = Color.Red, fontSize = 10.ssp)
+                    !isPasswordValid.value -> Text("Password must be at least 8 characters", color = Color.Black, fontSize = 10.ssp)
+                    else -> {}
+                }
+            },
             shape = RoundedCornerShape(12.sdp)
         )
 
@@ -262,10 +345,57 @@ fun SignUpScreen(navController: NavController) {
                 .clip(RoundedCornerShape(12.sdp))
                 .background(Color.Blue)
                 .fillMaxWidth(0.6f)
-                .padding(horizontal = 12.sdp)
                 .clickable {
-                    authViewModel.signup(emailState.value, passwordState.value)
-                },
+                    var valid = true
+
+                    // Name must not be blank
+                    if (name.value.isBlank()) {
+                        nameError.value = true
+                        valid = false
+                    }
+
+                    // Phone must be exactly 10 digits
+                    if (phoneNo.value.isBlank()) {
+                        phoneError.value = true
+                        valid = false
+                    } else if (phoneNo.value.length != 10 || !phoneNo.value.all { it.isDigit() }) {
+                        isPhoneNoValid.value = false
+                        valid = false
+                    } else {
+                        isPhoneNoValid.value = true
+                    }
+
+                    // Email must be valid format
+                    if (emailState.value.isBlank()) {
+                        emailError.value = true
+                        valid = false
+                    } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(emailState.value).matches()) {
+                        isEmailValid.value = false
+                        valid = false
+                        Toast.makeText(context, "Email is Invalid", Toast.LENGTH_SHORT).show()
+                    } else {
+                        isEmailValid.value = true
+                    }
+
+                    // Password must be min 8 characters
+                    if (passwordState.value.isBlank()) {
+                        passwordError.value = true
+                        valid = false
+                    } else if (passwordState.value.length < 8) {
+                        isPasswordValid.value = false
+                        valid = false
+                    } else {
+                        isPasswordValid.value = true
+                    }
+
+                    if (valid) {
+                        authViewModel.signup(emailState.value, passwordState.value)
+                    } else {
+                        Toast.makeText(context, "Please correct the errors before proceeding", Toast.LENGTH_SHORT).show()
+                    }
+
+                }
+                .padding(horizontal = 12.sdp),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -305,7 +435,7 @@ fun SignUpScreen(navController: NavController) {
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-private fun SignUpPreview(){
+private fun SignUpPreview() {
 
     val navController = rememberNavController()
     SignUpScreen(navController)
