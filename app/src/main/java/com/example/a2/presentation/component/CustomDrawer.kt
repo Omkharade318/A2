@@ -48,7 +48,7 @@ fun CustomDrawer(
     navController: NavController
 ) {
 
-    val authViewModel : AuthViewModel = AuthViewModel()
+    val authViewModel = AuthViewModel()
     val authState = authViewModel.authstate.observeAsState()
 
     val context = LocalContext.current

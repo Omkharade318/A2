@@ -1,6 +1,8 @@
 package com.example.a2.presentation.auth
 
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -53,6 +55,11 @@ import com.example.a2.R
 import com.example.a2.Screen
 import com.example.a2.model.AuthState
 import com.example.a2.model.AuthViewModel
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.Firebase
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.auth
 import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
 
@@ -83,6 +90,39 @@ fun SignUpScreen(navController: NavController) {
     val authState = authViewModel.authstate.observeAsState()
 
     val context = LocalContext.current
+
+    val googleSignInOptions = remember {
+        GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken("976180138313-ukum9o992ough6d7h2pl2p948dfj5pkf.apps.googleusercontent.com")
+            .requestEmail()
+            .build()
+    }
+
+    val googleSignInClient = remember {
+        GoogleSignIn.getClient(context, googleSignInOptions)
+    }
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ){
+        val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
+        try {
+            val account = task.result
+            val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+            Firebase.auth.signInWithCredential(credential)
+                .addOnCompleteListener { authTask ->
+                    if (authTask.isSuccessful){
+                        Toast.makeText(context, "Sign-up successful", Toast.LENGTH_SHORT).show()
+                        navController.navigate(Screen.Home.route)
+                    }
+                    else{
+                        Toast.makeText(context, "Sign-up failed", Toast.LENGTH_SHORT).show()
+                    }
+                }
+        } catch (e: Exception){
+            e.printStackTrace()
+        }
+    }
 
     LaunchedEffect(authState.value) {
         when (val state = authState.value) {
@@ -316,6 +356,10 @@ fun SignUpScreen(navController: NavController) {
                 .height(48.sdp)
                 .clip(RoundedCornerShape(12.sdp))
                 .background(Color.White)
+                .clickable {
+                    val signInIntent = googleSignInClient.signInIntent
+                    launcher.launch(signInIntent)
+                }
                 .padding(horizontal = 12.sdp),
             contentAlignment = Alignment.Center
         ) {
