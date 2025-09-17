@@ -1,8 +1,10 @@
 package com.example.a2.presentation.home
 
 import android.content.Intent
+import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -64,15 +66,43 @@ import com.example.a2.domain.model.opposite
 import com.example.a2.model.AuthState
 import com.example.a2.model.AuthViewModel
 import com.example.a2.presentation.ChatPage
+import com.example.a2.presentation.component.RequestNotificationPermissionDialog
 import com.example.a2.ui.theme.Blue
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.ktx.messaging
 import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
+@OptIn(ExperimentalPermissionsApi::class)
 @Preview(showSystemUi = true)
 @Composable
 fun HomeScreen() {
 
     val navController = rememberNavController()
+
+    val openDialog = remember {
+        mutableStateOf(false)
+    }
+
+    val notificationPermissionState = rememberPermissionState(permission = android.Manifest.permission.POST_NOTIFICATIONS)
+
+    if (openDialog.value){
+        RequestNotificationPermissionDialog(
+            openDialog = openDialog,
+            permissionState = notificationPermissionState
+        )
+    }
+
+    LaunchedEffect(key1 = Unit) {
+        if (notificationPermissionState.status.isGranted || Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU)
+            Firebase.messaging.subscribeToTopic("Tutorial")
+        else
+            openDialog.value = true
+    }
 
     var drawerState by remember { mutableStateOf(CustomDrawerState.Closed) }
     var selectedNavigationItem by remember { mutableStateOf(NavigationItem.LogOut) }

@@ -1,5 +1,7 @@
 package com.example.a2
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -17,6 +19,7 @@ import com.example.a2.presentation.drawer.ProfileScreen
 import com.example.a2.presentation.home.HomeScreen
 import ir.kaaveh.sdpcompose.sdp
 
+@RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Composable
 fun Navigation(){
 

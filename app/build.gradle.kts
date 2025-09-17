@@ -56,6 +56,7 @@ dependencies {
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
+//    implementation(libs.firebase.messaging)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -90,5 +91,7 @@ dependencies {
     implementation("com.google.firebase:firebase-storage")
     implementation("com.google.firebase:firebase-auth-ktx:22.1.0")
     implementation("com.google.ai.client.generativeai:generativeai:0.4.0")
+    implementation("com.google.firebase:firebase-messaging-ktx")
 
+    implementation("com.google.accompanist:accompanist-permissions:0.37.3")
 }
